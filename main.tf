@@ -76,12 +76,12 @@ resource "azurerm_network_interface" "main" {
   ip_configuration {
     name                          = "${var.environment_name}-${var.vm_name}-private-ip"
     subnet_id                     = var.subnet_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = var.private_ip_address_allocation
+    private_ip_address            = var.private_ip_address_allocation == "Static" ? var.private_ip_address : null
     public_ip_address_id          = var.public_ip ? azurerm_public_ip.main[0].id : null
   }
 
-  # network_security_group_id = azurerm_network_security_group.main.id
-  network_security_group_id = var.network_security_group_id != null ? var.network_security_group_id : null
+  dns_servers = var.dns_servers
 
   tags = local.all_tags
 }
@@ -136,6 +136,12 @@ resource "azurerm_virtual_machine" "main" {
   #; Set-NetFirewallRule -Name WINRM-HTTP-In-TCP -RemoteAddress Any
   tags = local.all_tags
 }
+
+# resource "azurerm_subnet_network_security_group_association" "main" {
+#   count                     = var.network_security_group_id == null ? 0 : 1
+#   subnet_id                 = var.subnet_id
+#   network_security_group_id = var.network_security_group_id
+# }
 
 # resource "azurerm_virtual_machine_extension" "winrm" {
 #   name                 = "${azurerm_virtual_machine.main.name}-winrm"

@@ -48,12 +48,27 @@ variable "admin_password" {
   default = null
 }
 
-variable "network_security_group_id" {
-  type    = string
+variable "dns_servers" {
+  type    = list(string)
   default = null
 }
 
+# variable "network_security_group_id" {
+#   type    = string
+#   default = null
+# }
+
 variable "tags" {
   type    = map
+  default = null
+}
+
+variable "private_ip_address_allocation" {
+  type    = string
+  default = "Dynamic"
+}
+
+variable "private_ip_address" {
+  type    = string
   default = null
 }
